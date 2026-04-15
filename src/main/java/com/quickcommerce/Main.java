@@ -7,9 +7,10 @@ import com.quickcommerce.model.Customer;
 import com.quickcommerce.model.DeliveryPartner;
 import com.quickcommerce.model.Order;
 import com.quickcommerce.model.Product;
+import com.quickcommerce.model.ProductBuilder;
 import com.quickcommerce.model.Vendor;
 import com.quickcommerce.service.ProductPresenter;
-
+import com.quickcommerce.model.ProductBuilder;
 /**
  * Entry point for the Quick Commerce Grocery Delivery Application.
  *
@@ -73,12 +74,90 @@ public class Main {
 
         vendor.login("ravi@freshmart.com", "vendor123");
 
-        Product milk     = new Product("Full Cream Milk 1L",  "Dairy",   60.00, 100);
-        Product bread    = new Product("Whole Wheat Bread",   "Bakery",  45.00,  50);
-        Product eggs     = new Product("Farm Fresh Eggs (12)","Dairy",   89.00,  80);
-        Product rice     = new Product("Basmati Rice 5kg",    "Grains", 350.00,  30);
-        Product chocolate= new Product("Dark Chocolate 100g", "Snacks",  99.00,  60);
+        // ---- Products ----
+Product milk = new ProductBuilder()
+        .name("Full Cream Milk 1L")
+        .category("Dairy")
+        .price(60.00)
+        .stock(100)
+        .build();
 
+Product bread = new ProductBuilder()
+        .name("Whole Wheat Bread")
+        .category("Bakery")
+        .price(45.00)
+        .stock(50)
+        .build();
+
+Product eggs = new ProductBuilder()
+        .name("Farm Fresh Eggs (12)")
+        .category("Dairy")
+        .price(89.00)
+        .stock(80)
+        .build();
+
+Product rice = new ProductBuilder()
+        .name("Basmati Rice 5kg")
+        .category("Grains")
+        .price(350.00)
+        .stock(30)
+        .build();
+
+Product choc = new ProductBuilder()
+        .name("Dark Chocolate 100g")
+        .category("Snacks")
+        .price(99.00)
+        .stock(60)
+        .build();
+
+Product butter = new ProductBuilder()
+        .name("Amul Butter 500g")
+        .category("Dairy")
+        .price(55.00)
+        .stock(70)
+        .build();
+
+Product atta = new ProductBuilder()
+        .name("Aashirvaad Atta 10kg")
+        .category("Grains")
+        .price(420.00)
+        .stock(25)
+        .build();
+
+Product tomato = new ProductBuilder()
+        .name("Tomatoes (1kg)")
+        .category("Veggies")
+        .price(40.00)
+        .stock(120)
+        .build();
+
+Product onion = new ProductBuilder()
+        .name("Onions (1kg)")
+        .category("Veggies")
+        .price(35.00)
+        .stock(150)
+        .build();
+
+Product banana = new ProductBuilder()
+        .name("Bananas (dozen)")
+        .category("Fruits")
+        .price(60.00)
+        .stock(90)
+        .build();
+
+Product apple = new ProductBuilder()
+        .name("Royal Gala Apples (6)")
+        .category("Fruits")
+        .price(120.00)
+        .stock(55)
+        .build();
+
+Product yogurt = new ProductBuilder()
+        .name("Greek Yogurt 400g")
+        .category("Dairy")
+        .price(85.00)
+        .stock(40)
+        .build();
         vendor.addProduct(milk);
         vendor.addProduct(bread);
         vendor.addProduct(eggs);
