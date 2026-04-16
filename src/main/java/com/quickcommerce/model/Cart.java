@@ -1,13 +1,22 @@
 package com.quickcommerce.model;
 
+im<<<<<<< HEAD
 import com.quickcommerce.exception.ResourceNotFoundException;
 
+=======
+>>>>>>> 0138ff3 (Person1: wire factories and update Customer/Cart to use factories)
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+<<<<<<< HEAD
+=======
+import com.quickcommerce.exception.ResourceNotFoundException;
+import com.quickcommerce.factory.CartItemFactory;
+
+>>>>>>> 0138ff3 (Person1: wire factories and update Customer/Cart to use factories)
 /**
  * Represents a shopping cart belonging to exactly one {@link Customer}.
  *
@@ -63,13 +72,12 @@ public class Cart {
             existing.get().setQuantity(existing.get().getQuantity() + quantity);
             System.out.println("[CART] Updated quantity for '" + product.getName() + "'.");
         } else {
+<<<<<<< HEAD
             cartItems.add(new CartItem(product, quantity));
-            System.out.println("[CART] '" + product.getName() + "' added (qty: " + quantity + ").");
-        }
-    }
-
-    /**
-     * Removes the cart item associated with the given product ID.
+=======
+            cartItems.add(CartItemFactory.of(product, quantity));
+>>>>>>> 0138ff3 (Person1: wire factories and update Customer/Cart to use factories)
+* Removes the cart item associated with the given product ID.
      *
      * @param productId the ID of the product to remove
      */
