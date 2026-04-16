@@ -10,7 +10,6 @@ import com.quickcommerce.model.Product;
 import com.quickcommerce.model.ProductBuilder;
 import com.quickcommerce.model.Vendor;
 import com.quickcommerce.service.ProductPresenter;
-import com.quickcommerce.model.ProductBuilder;
 /**
  * Entry point for the Quick Commerce Grocery Delivery Application.
  *
@@ -103,7 +102,7 @@ Product rice = new ProductBuilder()
         .stock(30)
         .build();
 
-Product choc = new ProductBuilder()
+Product chocolate = new ProductBuilder()
         .name("Dark Chocolate 100g")
         .category("Snacks")
         .price(99.00)

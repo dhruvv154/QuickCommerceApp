@@ -174,9 +174,3 @@ The table below maps main source files to applicable GRASP and SOLID principles.
 | [src/main/java/com/quickcommerce/service/IUserService.java](src/main/java/com/quickcommerce/service/IUserService.java) | Protected Variations | ISP, DIP | Abstraction for user operations. |
 | [src/main/java/com/quickcommerce/service/IOrderService.java](src/main/java/com/quickcommerce/service/IOrderService.java) | Protected Variations | ISP, DIP | Abstraction for order operations. |
 
-If you'd like, I can:
-- extract `UserMapper` and `OrderMapper` (completing Creator/Information Expert separation),
-- wrap Spring JPA repositories behind repository ports to strengthen Protected Variations, or
-- run a full Maven build and fix any compilation issues introduced by the refactor.
-
-Tell me which next step you want and I'll proceed.
