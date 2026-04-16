@@ -136,4 +136,3 @@ public class Customer extends User {
                 getUserId(), getName(), getEmail(), deliveryAddress);
     }
 }
-D:\QuickCommerceApp\src\main\java\com\quickcommerce\model\Customer.java
