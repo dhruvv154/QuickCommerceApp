@@ -10,38 +10,21 @@ A fully object-oriented Java project modelled from the UML class diagram.
 QuickCommerceApp/
 └── src/main/java/com/quickcommerce/
     ├── Main.java                          ← Entry point / demo runner
-    │
-    ├── enums/
-    │   ├── OrderStatus.java               ← PENDING, CONFIRMED, OUT_FOR_DELIVERY, DELIVERED, CANCELLED
-    │   ├── PaymentMethod.java             ← UPI, CREDIT_CARD, DEBIT_CARD, COD, etc.
-    │   └── PaymentStatus.java             ← PENDING, SUCCESS, FAILED, REFUNDED
-    │
-    ├── exception/
-    │   ├── ResourceNotFoundException.java ← Thrown when an entity is not found
-    │   ├── InsufficientStockException.java← Thrown when stock cannot fulfil a request
-    │   └── InvalidOperationException.java ← Thrown for illegal state transitions
-    │
-    ├── interfaces/
-    │   ├── Trackable.java                 ← Contract for trackable entities (ISP)
-    │   └── Processable.java               ← Contract for processable entities (ISP)
-    │
-    ├── model/
-    │   ├── User.java                      ← Abstract base class (Inheritance root)
-    │   ├── Customer.java                  ← Extends User; owns Cart and Orders
-    │   ├── DeliveryPartner.java           ← Extends User; handles deliveries
-    │   ├── Vendor.java                    ← Extends User; manages product catalogue
-    │   ├── Administrator.java             ← Extends User; platform admin
-    │   ├── Product.java                   ← A product listing
-    │   ├── Cart.java                      ← Shopping cart (1-to-1 with Customer)
-    │   ├── CartItem.java                  ← Line item inside a Cart
-    │   ├── Order.java                     ← A placed order (implements Trackable)
-    │   ├── OrderItem.java                 ← Immutable line item inside an Order
-    │   └── Payment.java                   ← Payment transaction (implements Processable)
-    │
-    └── service/
-        ├── UserService.java               ← User registry, registration, auth
-        ├── ProductService.java            ← Platform-wide product catalogue
-        └── OrderService.java              ← Order lifecycle, delivery assignment
+    ├── SpringApp.java                      ← Spring Boot wiring & app listener
+    ├── enums/                              ← small value enums (OrderStatus, PaymentMethod, ...)
+    ├── exception/                          ← domain exceptions
+    ├── interfaces/                         ← `Trackable`, `Processable`
+    ├── model/                              ← domain model (User, Customer, Vendor, Product, Cart, Order, Payment, ...)
+    ├── factory/                            ← Factory classes (CartFactory, OrderFactory, CartItemFactory)
+    ├── facade/                             ← Facade implementations (ProductManagementFacade)
+    ├── role/                               ← Strategy implementations for roles (RoleBehavior, CustomerBehavior, ...)
+    ├── payment/handler/                    ← Chain-of-responsibility handlers (ValidationHandler, AuthorizationHandler, ...)
+    ├── persistence/
+    │   ├── entity/                         ← JPA entity classes (UserEntity, ProductEntity, OrderEntity, ...)
+    │   └── repo/                           ← Spring Data repositories
+    ├── controller/                         ← UI controllers wrapping services
+    ├── service/                            ← domain services (IUserService, ProductService, OrderService, mappers)
+    └── gui/                                ← Swing UI, frames, panels and components
 ```
 
 ---
@@ -64,14 +47,14 @@ QuickCommerceApp/
 
 ## Design Pattern Mapping
 
-The table below maps the required 4 patterns, including creational, structural, behavioral, and one framework-enforced pattern.
+Below are the four design patterns implemented and where to find their code.
 
-| Pattern | Category | Where Implemented | Evidence |
-|---|---|---|---|
-| Factory Method | Creational | `OrderItem.fromCartItem(...)` creates `OrderItem` from `CartItem` | [src/main/java/com/quickcommerce/model/OrderItem.java](src/main/java/com/quickcommerce/model/OrderItem.java) |
-| Adapter (Mapper-style) | Structural | `ProductMapper` adapts between domain model and persistence entity | [src/main/java/com/quickcommerce/service/ProductMapper.java](src/main/java/com/quickcommerce/service/ProductMapper.java) |
-| Observer / Event Listener | Behavioral | Swing event callbacks via `MouseAdapter` in custom UI components | [src/main/java/com/quickcommerce/gui/components/StyledButton.java](src/main/java/com/quickcommerce/gui/components/StyledButton.java) |
-| Repository (Spring Data JPA) | Framework-enforced | Spring repositories extend `JpaRepository` and are injected into services | [src/main/java/com/quickcommerce/persistence/repo/ProductRepository.java](src/main/java/com/quickcommerce/persistence/repo/ProductRepository.java), [src/main/java/com/quickcommerce/SpringApp.java](src/main/java/com/quickcommerce/SpringApp.java) |
+| Assigned Person | Pattern | Category | Files (implementation) | Note |
+|---|---|---:|---|---|
+| Person 1 — Cart / Order / CartItem | Factory (static factories) | Creational | [src/main/java/com/quickcommerce/factory/CartFactory.java](src/main/java/com/quickcommerce/factory/CartFactory.java), [src/main/java/com/quickcommerce/factory/OrderFactory.java](src/main/java/com/quickcommerce/factory/OrderFactory.java), [src/main/java/com/quickcommerce/factory/CartItemFactory.java](src/main/java/com/quickcommerce/factory/CartItemFactory.java) | Centralises object creation; production code now uses these factories (e.g., `Customer` and `Cart`). |
+| Person 2 — Admin / Vendor / Product | Facade (`ProductManagementFacade`) | Structural | [src/main/java/com/quickcommerce/facade/ProductManagementFacade.java](src/main/java/com/quickcommerce/facade/ProductManagementFacade.java) | Simplifies product/vendor/admin workflows; used from `Main`, `AppContext`, and `VendorPanel`. |
+| Person 3 — User / Customer / DeliveryPartner | Strategy (`RoleBehavior`) | Behavioral | [src/main/java/com/quickcommerce/role/RoleBehavior.java](src/main/java/com/quickcommerce/role/RoleBehavior.java), [src/main/java/com/quickcommerce/role/CustomerBehavior.java](src/main/java/com/quickcommerce/role/CustomerBehavior.java), [src/main/java/com/quickcommerce/role/VendorBehavior.java](src/main/java/com/quickcommerce/role/VendorBehavior.java), [src/main/java/com/quickcommerce/role/DeliveryPartnerBehavior.java](src/main/java/com/quickcommerce/role/DeliveryPartnerBehavior.java), [src/main/java/com/quickcommerce/role/RoleBehaviorFactory.java](src/main/java/com/quickcommerce/role/RoleBehaviorFactory.java) | Role-specific runtime behaviour invoked from `UserService.login()` / `logout()`. |
+| Person 4 — Payment / Order Items | Chain of Responsibility (payment pipeline) | Behavioral | [src/main/java/com/quickcommerce/payment/handler/PaymentHandler.java](src/main/java/com/quickcommerce/payment/handler/PaymentHandler.java), [src/main/java/com/quickcommerce/payment/handler/ValidationHandler.java](src/main/java/com/quickcommerce/payment/handler/ValidationHandler.java), [src/main/java/com/quickcommerce/payment/handler/AuthorizationHandler.java](src/main/java/com/quickcommerce/payment/handler/AuthorizationHandler.java), [src/main/java/com/quickcommerce/payment/handler/CaptureHandler.java](src/main/java/com/quickcommerce/payment/handler/CaptureHandler.java), [src/main/java/com/quickcommerce/payment/handler/InventoryUpdateHandler.java](src/main/java/com/quickcommerce/payment/handler/InventoryUpdateHandler.java), [src/main/java/com/quickcommerce/payment/handler/PaymentProcessingChain.java](src/main/java/com/quickcommerce/payment/handler/PaymentProcessingChain.java) | Payment processing pipeline executed from `Order.checkout()`. |
 
 ---
 
